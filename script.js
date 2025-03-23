@@ -9,23 +9,21 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     return;
   }
 
-  const payload = { text: input };
+  const formData = new FormData();
+  formData.append("text", input);
 
   try {
     const response = await fetch(WEB_APP_URL, {
       method: 'POST',
-      redirect: 'follow', // ✅ critical!
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8' // ✅ avoids CORS preflight
-      },
-      body: JSON.stringify(payload)
+      body: formData
     });
 
     const result = await response.json();
-    alert(`✅ Success! Received: ${result.received}`);
+    alert(`✅ Success! You entered: ${result.received}`);
     document.getElementById("userInput").value = "";
-  } catch (err) {
-    console.error("❌ Failed to send:", err);
-    alert("Something went wrong!");
+  } catch (error) {
+    console.error("❌ Error sending data:", error);
+    alert("Something went wrong.");
   }
 });
+
