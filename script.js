@@ -1,4 +1,6 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbynaliQdn3-ym4XeGau2VNqXaraPbYMFZNtm0ny6iSV3jbO-eZOASLWDhGCenuomP1p/exec'
+
+
 document.getElementById("submitBtn").addEventListener("click", async () => {
   const input = document.getElementById("userInput").value;
 
@@ -7,20 +9,23 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     return;
   }
 
+  const payload = { text: input };
+
   try {
     const response = await fetch(WEB_APP_URL, {
       method: 'POST',
+      redirect: 'follow', // ✅ critical!
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain;charset=utf-8' // ✅ avoids CORS preflight
       },
-      body: JSON.stringify({ text: input })
+      body: JSON.stringify(payload)
     });
 
     const result = await response.json();
-    alert(`✅ Success! You entered: ${result.received}`);
+    alert(`✅ Success! Received: ${result.received}`);
     document.getElementById("userInput").value = "";
-  } catch (error) {
-    console.error("❌ Error sending data:", error);
-    alert("Something went wrong. Check console.");
+  } catch (err) {
+    console.error("❌ Failed to send:", err);
+    alert("Something went wrong!");
   }
 });
